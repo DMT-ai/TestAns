@@ -347,6 +347,7 @@ function nextQuestion() {
 }
 
 function endGame() {
+    feedbackModal.classList.add("hidden"); // Fix: Hide modal when game ends
     gameScreen.classList.remove("active");
     endScreen.classList.add("active");
     

@@ -24,7 +24,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #10B981, #0EA5E9, #8B5CF6);
+    background: linear-gradient(135deg, #F43F5E, #F97316, #FBBF24);
     background-size: 200% 200%;
     animation: gradientBG 15s ease infinite;
     color: white;
@@ -133,15 +133,15 @@ h4 { font-size: 1.1rem; margin-bottom: 20px; font-weight: 600; text-align: cente
 .game-header { 
     display: flex; 
     justify-content: space-between; 
-    align-items: center; 
+    align-items: flex-start; 
     margin-bottom: 20px; 
     flex-wrap: wrap; 
     gap: 15px; 
 }
-.header-left { display: flex; align-items: center; }
-.header-right { display: flex; align-items: center; }
+.header-left { display: flex; flex-direction: column; gap: 15px; }
+.header-right { display: flex; align-items: flex-start; }
 
-.stats { display: flex; gap: 15px; flex-wrap: wrap; justify-content: flex-end; }
+.stats { display: flex; gap: 15px; flex-wrap: wrap; }
 .stat-item {
     background: rgba(0,0,0,0.3);
     padding: 8px 16px;
