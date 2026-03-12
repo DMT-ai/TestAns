@@ -24,7 +24,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #F43F5E, #F97316, #FBBF24);
+    background: linear-gradient(135deg, #1E1B4B, #312E81, #1E3A8A);
     background-size: 200% 200%;
     animation: gradientBG 15s ease infinite;
     color: white;
