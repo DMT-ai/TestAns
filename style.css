@@ -24,13 +24,21 @@
 }
 
 body {
-    background: linear-gradient(135deg, #1E1B4B, #312E81, #1E3A8A);
+    background: linear-gradient(135deg, #0F172A, #1E293B, #334155);
+    background-size: 200% 200%;
+    animation: gradientBG 15s ease infinite;
     color: white;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 #app {
@@ -131,6 +139,19 @@ header { display: flex; justify-content: space-between; align-items: flex-start;
     border: 1px solid rgba(255,255,255,0.1);
 }
 .difficulty-indicator { color: var(--success); }
+.timer-indicator { color: #E2E8F0; min-width: 90px; justify-content: center; }
+.danger-text { color: var(--danger) !important; font-weight: bold; }
+
+@keyframes shakeInfinite {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+}
+.shake-infinite {
+    animation: shakeInfinite 0.3s ease-in-out infinite;
+    border-color: rgba(239, 68, 68, 0.5) !important;
+    background: rgba(239, 68, 68, 0.1) !important;
+}
 
 /* Lifelines */
 .lifelines { display: flex; gap: 10px; }

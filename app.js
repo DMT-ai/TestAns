@@ -13,6 +13,10 @@ let lifelines = {
     "ll-skip": { count: 1, active: false }
 };
 
+// Timer state
+let timerInterval = null;
+let timeLeft = 0;
+
 let correctCount = 0;
 
 // DOM Elements
@@ -128,6 +132,9 @@ function loadQuestion() {
     scenarioText.innerText = currentQuestionMap.scenario;
     feedbackModal.classList.add("hidden");
     
+    // Start Timer
+    startTimer();
+    
     // Reset DISC options
     document.querySelectorAll(".disc-btn").forEach(btn => {
         btn.classList.remove("selected", "hidden-ll");
@@ -171,9 +178,11 @@ function setupPhase2() {
 }
 
 function handleResponseSelection(responseObj) {
+    clearInterval(timerInterval); // Stop timer when answered
+    
     // Determine right/wrong
     const isDiscCorrect = selectedDISC === currentQuestionMap.correctDisc;
-    const isResponseCorrect = responseObj.isCorrect;
+    const isResponseCorrect = responseObj ? responseObj.isCorrect : false; // Handle timeout
     
     showFeedback(isDiscCorrect, isResponseCorrect, responseObj);
 }
@@ -244,7 +253,7 @@ function showFeedback(discCorrect, respCorrect, selectedResp) {
     }
     
     // DISC Result formatting
-    dRes.innerText = discCorrect ? `Đúng (Nhóm ${selectedDISC})` : `Sai (Chọn ${selectedDISC})`;
+    dRes.innerText = selectedDISC ? (discCorrect ? `Đúng (Nhóm ${selectedDISC})` : `Sai (Chọn ${selectedDISC})`) : "Hết giờ (Chưa chọn)";
     dRes.className = discCorrect ? "correct" : "wrong";
     
     rRes.innerText = respCorrect ? "Phản hồi chuẩn xác" : "Phản hồi chưa tối ưu";
@@ -291,7 +300,7 @@ function handleLifeline(type) {
     
     if (type === "ll-5050") {
         if (currentPhase !== 2) {
-            showToast("50/50 chỉ dùng được khi đang chọn câu Phản Hồi!");
+            showToast("50/50 chỉ dùng được khi ở Bước 2: Chọn Phản Hồi!");
             return;
         }
         use5050();
@@ -300,6 +309,7 @@ function handleLifeline(type) {
         showToast("GỢI Ý: " + currentQuestionMap.explanation.disc);
     }
     else if (type === "ll-skip") {
+        clearInterval(timerInterval);
         useSkip();
     }
     
@@ -334,3 +344,47 @@ function showToast(msg) {
         toast.classList.add("hidden");
     }, 3000);
 }
+
+// Timer functionality
+function startTimer() {
+    clearInterval(timerInterval);
+    
+    // 20s for questions 1-9 (currentQIndex 0-8)
+    // 10s for questions 10-15 (currentQIndex 9-14)
+    if (currentQIndex < 9) {
+        timeLeft = 20;
+    } else {
+        timeLeft = 10;
+    }
+    
+    updateTimerUI();
+    
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerUI();
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            handleTimeOut();
+        }
+    }, 1000);
+}
+
+function updateTimerUI() {
+    const timerDisplay = document.getElementById("time-left");
+    if (timerDisplay) {
+        timerDisplay.innerText = timeLeft;
+        if (timeLeft <= 5) {
+            timerDisplay.parentElement.classList.add("danger-text", "shake-infinite");
+        } else {
+            timerDisplay.parentElement.classList.remove("danger-text", "shake-infinite");
+        }
+    }
+}
+
+function handleTimeOut() {
+    showFeedback(false, false, null);
+    // Overwrite the title text for timeout feeling
+    document.getElementById("feedback-title").innerText = "Hết Thời Gian!";
+}
+

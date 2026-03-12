@@ -7,8 +7,9 @@ Một game tương tác huấn luyện sử dụng mô hình DISC dành cho nhâ
 - **Bộ câu hỏi ngẫu nhiên:** 15 câu hỏi được chọn ngẫu nhiên mỗi lần chơi với độ khó tăng dần (6 Dễ, 4 Trung Bình, 5 Khó).
 - **Phân tích DISC:** Rèn luyện phản xạ nhận diện khách hàng thuộc nhóm D, I, S, hay C.
 - **Phản hồi chi tiết:** Giải thích cặn kẽ vì sao một câu trả lời là đúng hay sai.
+- **Đồng hồ đếm ngược:** Thử thách thời gian dựa trên cấp độ câu hỏi (20s cho Dễ/Trung Bình, và 10s cho Khó).
 - **Quyền trợ giúp:** Tích hợp 3 quyền trợ giúp tương tự gameshow (50:50, Gợi ý, Bỏ qua).
-- **Hiệu ứng sinh động (Premium UI):** Giao diện Glassmorphism, hiệu ứng pháo hoa và phản ứng bằng Emoji sống động.
+- **Hiệu ứng sinh động (Premium UI):** Giao diện Glassmorphism với Background trôi lơ lửng, hiệu ứng pháo hoa và phản ứng bằng Emoji sống động.
 
 ## Cài đặt & Chạy ứng dụng
 
