@@ -35,6 +35,8 @@ const feedbackModal = document.getElementById("feedback-modal");
 document.getElementById("start-btn").addEventListener("click", startGame);
 document.getElementById("next-q-btn").addEventListener("click", nextQuestion);
 document.getElementById("restart-btn").addEventListener("click", startGame);
+document.getElementById("home-btn").addEventListener("click", backToHome);
+document.getElementById("end-home-btn").addEventListener("click", backToHome);
 
 document.querySelectorAll(".disc-btn").forEach(btn => {
     btn.addEventListener("click", (e) => handleDiscSelection(e.currentTarget.dataset.type));
@@ -167,6 +169,19 @@ function startGame() {
     gameScreen.classList.add("active");
     
     loadQuestion();
+}
+
+function backToHome() {
+    clearInterval(timerInterval);
+    gameScreen.classList.remove("active");
+    endScreen.classList.remove("active");
+    startScreen.classList.add("active");
+    
+    // Reset Persistent Hint
+    const hintBox = document.getElementById("persistent-hint-box");
+    if (hintBox) {
+        hintBox.classList.add("hidden");
+    }
 }
 
 function resetLifelines() {

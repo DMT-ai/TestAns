@@ -73,6 +73,9 @@
                 </div>
                 
                 <div class="header-right">
+                    <button id="home-btn" class="lifeline-btn" title="Về trang chủ" style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); margin-right: 15px;">
+                        <i class="fa-solid fa-house"></i>
+                    </button>
                     <div class="stat-item timer-indicator"><i class="fa-solid fa-clock"></i> <span id="time-left">20</span>s</div>
                 </div>
             </header>
@@ -162,9 +165,14 @@
                 <div class="performance-stats">
                     <div>Số câu đúng: <span id="correct-count">0</span>/<span id="total-questions-display">15</span></div>
                 </div>
-                <button id="restart-btn" class="primary-btn pulse-glow">
-                    <i class="fa-solid fa-rotate-right"></i> Chơi lại
-                </button>
+                <div class="action-buttons" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <button id="restart-btn" class="primary-btn pulse-glow">
+                        <i class="fa-solid fa-rotate-right"></i> Chơi lại
+                    </button>
+                    <button id="end-home-btn" class="primary-btn" style="background: var(--dark);">
+                        <i class="fa-solid fa-house"></i> Trang chủ
+                    </button>
+                </div>
             </div>
         </div>
         
