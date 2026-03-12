@@ -57,16 +57,78 @@ function shuffleArray(array) {
 
 function selectGameQuestions() {
     // 6 Dễ, 4 Trung bình, 5 Khó
-    const easyQ = shuffleArray(questionBank.filter(q => q.difficulty === 'easy')).slice(0, 6);
-    const mediumQ = shuffleArray(questionBank.filter(q => q.difficulty === 'medium')).slice(0, 4);
-    const hardQ = shuffleArray(questionBank.filter(q => q.difficulty === 'hard')).slice(0, 5);
+    const easyPool = questionBank.filter(q => q.difficulty === 'easy');
+    const mediumPool = questionBank.filter(q => q.difficulty === 'medium');
+    const hardPool = questionBank.filter(q => q.difficulty === 'hard');
+
+    let history = JSON.parse(localStorage.getItem('discGameHistory') || '[]');
+    let currentPlayCount = parseInt(localStorage.getItem('discPlayCount') || '0');
     
-    // Combine and shuffle the final list of 15 questions
+    // Increment play count
+    currentPlayCount++;
+    localStorage.setItem('discPlayCount', currentPlayCount);
+    
+    // Pick questions based on rules
+    const targetEasy = 6;
+    const targetMedium = 4;
+    const targetHard = 5;
+    
+    // Check if we should apply the 50% reuse rule (within 5 plays)
+    // Rule: over 5 play logic -> if history has items, there's a 50% chance a question is pulled from history pool instead of being entirely fresh.
+    // If it's been more than 5 plays, we reset history to keep things fresh.
+    if (currentPlayCount > 5) {
+        history = [];
+        currentPlayCount = 1;
+        localStorage.setItem('discPlayCount', 1);
+    }
+    
+    const historicalIds = new Set(history);
+
+    function pickQuestions(pool, targetCount) {
+        const poolShuffled = shuffleArray([...pool]);
+        const selected = [];
+        
+        for (let q of poolShuffled) {
+            if (selected.length >= targetCount) break;
+            
+            // 50% chance to force an include if it's in history, OR if history is empty just pick it
+            if (historicalIds.has(q.id)) {
+                // It's a historical question, 50% chance to reuse it
+                if (Math.random() > 0.5) {
+                    selected.push(q);
+                }
+            } else {
+                // It's a fresh question
+                selected.push(q);
+            }
+        }
+        
+        // Fill the rest if we rejected too many historical questions
+        let fallbackIndex = 0;
+        while (selected.length < targetCount && fallbackIndex < poolShuffled.length) {
+            const q = poolShuffled[fallbackIndex];
+            if (!selected.includes(q)) {
+                selected.push(q);
+            }
+            fallbackIndex++;
+        }
+        
+        return selected;
+    }
+
+    const easyQ = pickQuestions(easyPool, targetEasy);
+    const mediumQ = pickQuestions(mediumPool, targetMedium);
+    const hardQ = pickQuestions(hardPool, targetHard);
+    
+    // Combine and sort by difficulty progression
     let finalSelection = [...easyQ, ...mediumQ, ...hardQ];
-    // Normally you'd shuffle here if you want mix, or keep them sorted by difficulty
-    // We'll sort by difficulty to have progression
     const orderMap = { 'easy': 1, 'medium': 2, 'hard': 3 };
     finalSelection.sort((a,b) => orderMap[a.difficulty] - orderMap[b.difficulty]);
+
+    // Update history for next run
+    const newHistoryIds = finalSelection.map(q => q.id);
+    localStorage.setItem('discGameHistory', JSON.stringify(newHistoryIds));
+
     return finalSelection;
 }
 
@@ -156,6 +218,7 @@ function handleDiscSelection(type) {
 }
 
 function setupPhase2() {
+    currentPhase = 2; // FIX: Update internal state to 2
     phase1.classList.remove("active");
     phase2.classList.add("active");
     
@@ -267,6 +330,9 @@ function showFeedback(discCorrect, respCorrect, selectedResp) {
     if (!respCorrect && selectedResp) {
         explWrongBox.classList.remove("hidden");
         explWrongText.innerText = currentQuestionMap.explanation.wrongResponses[selectedResp.id] || "Cách xử lý này sẽ làm tình huống xấu đi hoặc hỏng mối quan hệ.";
+    } else if (!discCorrect) {
+        explWrongBox.classList.remove("hidden");
+        explWrongText.innerText = `Bạn đã nhận diện sai nhóm tính cách. Khách hàng này thực chất là nhóm ${currentQuestionMap.correctDisc}.`;
     } else {
         explWrongBox.classList.add("hidden");
     }

@@ -36,23 +36,28 @@
 
         <!-- Game Screen -->
         <div id="game-screen" class="screen">
-            <header>
-                <div class="stats">
-                    <div class="stat-item"><i class="fa-solid fa-star"></i> Điểm: <span id="score">0</span></div>
-                    <div class="stat-item"><i class="fa-solid fa-layer-group"></i> Câu: <span id="question-progress">1/15</span></div>
-                    <div class="stat-item difficulty-indicator" id="difficulty-badge">Dễ</div>
-                    <div class="stat-item timer-indicator"><i class="fa-solid fa-clock"></i> <span id="time-left">20</span>s</div>
+            <header class="game-header">
+                <div class="header-left">
+                    <div class="lifelines">
+                        <button class="lifeline-btn" id="ll-5050" title="Loại bỏ 2 phương án sai">
+                            <i class="fa-solid fa-percent"></i> 50:50 <span class="ll-count" id="count-5050">1</span>
+                        </button>
+                        <button class="lifeline-btn" id="ll-hint" title="Gợi ý tính cách">
+                            <i class="fa-solid fa-lightbulb"></i> Gợi ý <span class="ll-count" id="count-hint">1</span>
+                        </button>
+                        <button class="lifeline-btn" id="ll-skip" title="Bỏ qua (nhưng không được điểm)">
+                            <i class="fa-solid fa-forward"></i> Bỏ qua <span class="ll-count" id="count-skip">1</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="lifelines">
-                    <button class="lifeline-btn" id="ll-5050" title="Loại bỏ 2 phương án sai">
-                        <i class="fa-solid fa-percent"></i> 50:50 <span class="ll-count" id="count-5050">1</span>
-                    </button>
-                    <button class="lifeline-btn" id="ll-hint" title="Gợi ý tính cách">
-                        <i class="fa-solid fa-lightbulb"></i> Gợi ý <span class="ll-count" id="count-hint">1</span>
-                    </button>
-                    <button class="lifeline-btn" id="ll-skip" title="Bỏ qua (nhưng không được điểm)">
-                        <i class="fa-solid fa-forward"></i> Bỏ qua <span class="ll-count" id="count-skip">1</span>
-                    </button>
+                
+                <div class="header-right">
+                    <div class="stats">
+                        <div class="stat-item"><i class="fa-solid fa-star"></i> Điểm: <span id="score">0</span></div>
+                        <div class="stat-item"><i class="fa-solid fa-layer-group"></i> Câu: <span id="question-progress">1/15</span></div>
+                        <div class="stat-item difficulty-indicator" id="difficulty-badge">Dễ</div>
+                        <div class="stat-item timer-indicator"><i class="fa-solid fa-clock"></i> <span id="time-left">20</span>s</div>
+                    </div>
                 </div>
             </header>
 
