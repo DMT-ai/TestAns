@@ -1,4 +1,5 @@
 // Game Initialization
+let totalQuestionsCount = 15;
 let selectedQuestions = [];
 let currentQIndex = 0;
 let score = 0;
@@ -68,10 +69,20 @@ function selectGameQuestions() {
     currentPlayCount++;
     localStorage.setItem('discPlayCount', currentPlayCount);
     
-    // Pick questions based on rules
-    const targetEasy = 6;
-    const targetMedium = 4;
-    const targetHard = 5;
+    // Determine distribution based on selected total count
+    let targetEasy = 6;
+    let targetMedium = 4;
+    let targetHard = 5;
+    
+    if (totalQuestionsCount === 10) {
+        targetEasy = 4;
+        targetMedium = 3;
+        targetHard = 3;
+    } else if (totalQuestionsCount === 20) {
+        targetEasy = 8;
+        targetMedium = 6;
+        targetHard = 6;
+    }
     
     // Check if we should apply the 50% reuse rule (within 5 plays)
     // Rule: over 5 play logic -> if history has items, there's a 50% chance a question is pulled from history pool instead of being entirely fresh.
@@ -113,6 +124,12 @@ function selectGameQuestions() {
             fallbackIndex++;
         }
         
+        // If we still don't have enough (e.g., requested 8 easy but only 6 exist), duplicate or pick random
+        // Note: The ideal solution is to have a larger question bank.
+        while (selected.length < targetCount && poolShuffled.length > 0) {
+             selected.push(poolShuffled[Math.floor(Math.random() * poolShuffled.length)]);
+        }
+        
         return selected;
     }
 
@@ -133,6 +150,12 @@ function selectGameQuestions() {
 }
 
 function startGame() {
+    // Read selected game length
+    const lengthRadio = document.querySelector('input[name="game-length"]:checked');
+    if (lengthRadio) {
+        totalQuestionsCount = parseInt(lengthRadio.value);
+    }
+
     selectedQuestions = selectGameQuestions();
     currentQIndex = 0;
     score = 0;
@@ -178,9 +201,15 @@ function loadQuestion() {
     currentPhase = 1;
     selectedDISC = null;
     
+    // Reset Persistent Hint
+    const hintBox = document.getElementById("persistent-hint-box");
+    if (hintBox) {
+        hintBox.classList.add("hidden");
+    }
+    
     // UI Update
     document.getElementById("score").innerText = score;
-    document.getElementById("question-progress").innerText = `${currentQIndex + 1}/15`;
+    document.getElementById("question-progress").innerText = `${currentQIndex + 1}/${totalQuestionsCount}`;
     
     // Difficulty badge
     const badge = document.getElementById("difficulty-badge");
@@ -353,11 +382,13 @@ function endGame() {
     
     document.getElementById("final-score").innerText = score;
     document.getElementById("correct-count").innerText = correctCount;
+    document.getElementById("total-questions-display").innerText = totalQuestionsCount;
     
     const evalText = document.getElementById("evaluation-text");
-    if(correctCount === 15) evalText.innerText = "Hoàn hảo! Bạn là bậc thầy giao tiếp!";
-    else if(correctCount >= 10) evalText.innerText = "Rất tốt! Bạn xử lý tình huống khá khéo léo.";
-    else if(correctCount >= 5) evalText.innerText = "Làm tốt! Nhưng cần ôn luyện thêm về DISC.";
+    const ratio = correctCount / totalQuestionsCount;
+    if(ratio > 0.9) evalText.innerText = "Hoàn hảo! Bạn là bậc thầy giao tiếp!";
+    else if(ratio >= 0.6) evalText.innerText = "Rất tốt! Bạn xử lý tình huống khá khéo léo.";
+    else if(ratio >= 0.3) evalText.innerText = "Làm tốt! Nhưng cần ôn luyện thêm về DISC.";
     else evalText.innerText = "Đừng nản chí! Hãy chơi lại để thuộc lòng mô hình DISC nhé.";
 }
 
@@ -373,7 +404,13 @@ function handleLifeline(type) {
         use5050();
     } 
     else if (type === "ll-hint") {
-        showToast("GỢI Ý: " + currentQuestionMap.explanation.disc);
+        const hintBox = document.getElementById("persistent-hint-box");
+        const hintText = document.getElementById("persistent-hint-text");
+        if (hintBox && hintText) {
+            hintText.innerText = currentQuestionMap.explanation.disc;
+            hintBox.classList.remove("hidden");
+        }
+        showToast("Đã kích hoạt gợi ý!");
     }
     else if (type === "ll-skip") {
         clearInterval(timerInterval);

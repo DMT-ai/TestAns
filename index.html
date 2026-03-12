@@ -22,12 +22,28 @@
                 <div class="rules">
                     <h3>Luật chơi:</h3>
                     <ul>
-                        <li><i class="fa-solid fa-check"></i> 15 tình huống từ Dễ đến Cực Khó.</li>
+                        <li><i class="fa-solid fa-check"></i> Chọn độ dài ván chơi tùy thích.</li>
                         <li><i class="fa-solid fa-check"></i> 1. Xác định nhóm DISC của khách hàng.</li>
                         <li><i class="fa-solid fa-check"></i> 2. Chọn cách phản hồi phù hợp nhất.</li>
                         <li><i class="fa-solid fa-check"></i> 3 quyền trợ giúp trong suốt quá trình chơi.</li>
                     </ul>
                 </div>
+                
+                <div class="game-settings" style="margin-bottom: 25px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; display: inline-block;">
+                    <h4 style="margin-bottom: 10px; color: #FCD34D;">Chọn số lượng câu hỏi:</h4>
+                    <div style="display: flex; gap: 20px; justify-content: center;">
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="game-length" value="10"> 10 Câu
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="game-length" value="15" checked> 15 Câu
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="game-length" value="20"> 20 Câu
+                        </label>
+                    </div>
+                </div>
+                
                 <button id="start-btn" class="primary-btn pulse-glow">
                     Bắt đầu chơi <i class="fa-solid fa-play"></i>
                 </button>
@@ -65,6 +81,9 @@
                 <div class="scenario-box">
                     <h3>Tình huống khách hàng:</h3>
                     <p id="scenario-text">Đang tải...</p>
+                    <div id="persistent-hint-box" class="hidden" style="margin-top: 15px; padding: 10px; background: rgba(245, 158, 11, 0.2); border-left: 4px solid var(--warning); border-radius: 4px; font-size: 0.95rem;">
+                        <i class="fa-solid fa-lightbulb" style="color: var(--warning);"></i> <strong>Gợi ý:</strong> <span id="persistent-hint-text"></span>
+                    </div>
                 </div>
 
                 <!-- Phase 1: Identify DISC -->
@@ -141,7 +160,7 @@
                 </div>
                 <p id="evaluation-text" class="evaluation">Tuyệt vời, bạn là một Master CSKH!</p>
                 <div class="performance-stats">
-                    <div>Số câu đúng: <span id="correct-count">0</span>/15</div>
+                    <div>Số câu đúng: <span id="correct-count">0</span>/<span id="total-questions-display">15</span></div>
                 </div>
                 <button id="restart-btn" class="primary-btn pulse-glow">
                     <i class="fa-solid fa-rotate-right"></i> Chơi lại
