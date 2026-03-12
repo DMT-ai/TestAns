@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISC Training Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen active">
+            <div class="glass-container">
+                <div class="logo">
+                    <i class="fa-solid fa-users-viewfinder"></i>
+                </div>
+                <h1>DISC Mastery</h1>
+                <p>Khám phá phong cách hành vi của khách hàng và rèn luyện kỹ năng phản hồi xuất sắc!</p>
+                <div class="rules">
+                    <h3>Luật chơi:</h3>
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> 15 tình huống từ Dễ đến Cực Khó.</li>
+                        <li><i class="fa-solid fa-check"></i> 1. Xác định nhóm DISC của khách hàng.</li>
+                        <li><i class="fa-solid fa-check"></i> 2. Chọn cách phản hồi phù hợp nhất.</li>
+                        <li><i class="fa-solid fa-check"></i> 3 quyền trợ giúp trong suốt quá trình chơi.</li>
+                    </ul>
+                </div>
+                <button id="start-btn" class="primary-btn pulse-glow">
+                    Bắt đầu chơi <i class="fa-solid fa-play"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <header>
+                <div class="stats">
+                    <div class="stat-item"><i class="fa-solid fa-star"></i> Điểm: <span id="score">0</span></div>
+                    <div class="stat-item"><i class="fa-solid fa-layer-group"></i> Câu: <span id="question-progress">1/15</span></div>
+                    <div class="stat-item difficulty-indicator" id="difficulty-badge">Dễ</div>
+                </div>
+                <div class="lifelines">
+                    <button class="lifeline-btn" id="ll-5050" title="Loại bỏ 2 phương án sai">
+                        <i class="fa-solid fa-percent"></i> 50:50 <span class="ll-count" id="count-5050">1</span>
+                    </button>
+                    <button class="lifeline-btn" id="ll-hint" title="Gợi ý tính cách">
+                        <i class="fa-solid fa-lightbulb"></i> Gợi ý <span class="ll-count" id="count-hint">1</span>
+                    </button>
+                    <button class="lifeline-btn" id="ll-skip" title="Bỏ qua (nhưng không được điểm)">
+                        <i class="fa-solid fa-forward"></i> Bỏ qua <span class="ll-count" id="count-skip">1</span>
+                    </button>
+                </div>
+            </header>
+
+            <main class="game-container glass-container">
+                <div class="scenario-box">
+                    <h3>Tình huống khách hàng:</h3>
+                    <p id="scenario-text">Đang tải...</p>
+                </div>
+
+                <!-- Phase 1: Identify DISC -->
+                <div id="phase-1" class="phase active">
+                    <h4>Bước 1: Xác định nhóm tính cách của khách hàng này</h4>
+                    <div class="options-grid disc-options" id="disc-options-container">
+                        <button class="option-btn disc-btn" data-type="D">
+                            <span class="disc-letter D">D</span> Dominance (Thống trị)
+                        </button>
+                        <button class="option-btn disc-btn" data-type="I">
+                            <span class="disc-letter I">I</span> Influence (Ảnh hưởng)
+                        </button>
+                        <button class="option-btn disc-btn" data-type="S">
+                            <span class="disc-letter S">S</span> Steadiness (Kiên định)
+                        </button>
+                        <button class="option-btn disc-btn" data-type="C">
+                            <span class="disc-letter C">C</span> Conscientiousness (Tuân thủ)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Phase 2: Choose Response -->
+                <div id="phase-2" class="phase">
+                    <h4>Bước 2: Bạn sẽ phản hồi như thế nào?</h4>
+                    <div class="options-list response-options" id="response-options-container">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Result/Feedback Modal (Overlay) -->
+        <div id="feedback-modal" class="modal-overlay hidden">
+            <div class="modal glass-container">
+                <div class="modal-icon" id="feedback-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2 id="feedback-title">Chính xác!</h2>
+                
+                <div id="reaction-container" class="reaction-container hidden"></div>
+
+                <div class="feedback-stats">
+                    <div class="f-stat"><span class="label">DISC:</span> <span id="feedback-disc-res" class="correct">Đúng</span></div>
+                    <div class="f-stat"><span class="label">Phản hồi:</span> <span id="feedback-reply-res" class="wrong">Sai</span></div>
+                </div>
+
+                <div class="explanation-box">
+                    <h3>Giải thích chi tiết:</h3>
+                    <div class="expl-section">
+                        <strong><i class="fa-solid fa-magnifying-glass"></i> Tại sao lại là nhóm <span id="correct-disc">D</span>?</strong>
+                        <p id="expl-disc">Khách hàng tập trung vào kết quả nhanh chóng, không muốn vòng vo.</p>
+                    </div>
+                    <div class="expl-section">
+                        <strong><i class="fa-solid fa-comment-dots"></i> Phản hồi tốt nhất:</strong>
+                        <p id="expl-response">Đi thẳng vào giải pháp và thời gian hoàn thành.</p>
+                    </div>
+                    <div class="expl-section wrong-feedback hidden" id="expl-wrong-box">
+                        <strong><i class="fa-solid fa-triangle-exclamation"></i> Lỗi sai của bạn:</strong>
+                        <p id="expl-wrong">Bạn chọn dỗ dành khách hàng, điều này làm họ bực mình thêm vì tốn thời gian.</p>
+                    </div>
+                </div>
+
+                <button id="next-q-btn" class="primary-btn">Tiếp theo <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen" class="screen">
+            <div class="glass-container text-center">
+                <h1>Kết thúc đào tạo!</h1>
+                <div class="final-score-circle">
+                    <span id="final-score">0</span>
+                    <small>Điểm</small>
+                </div>
+                <p id="evaluation-text" class="evaluation">Tuyệt vời, bạn là một Master CSKH!</p>
+                <div class="performance-stats">
+                    <div>Số câu đúng: <span id="correct-count">0</span>/15</div>
+                </div>
+                <button id="restart-btn" class="primary-btn pulse-glow">
+                    <i class="fa-solid fa-rotate-right"></i> Chơi lại
+                </button>
+            </div>
+        </div>
+        
+        <!-- Toast Notification -->
+        <div id="toast" class="toast hidden">Thêm thông báo ở đây</div>
+    </div>
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
